@@ -35,41 +35,13 @@ Built on the MEAN stack, the service can grow from a single league to multiple i
 
 ### High‑Level Technology Stack
 
-Layer
-
-Technology (latest)
-
-Rationale
-
-#### Front‑end
-
-**Angular 21** + Angular Material + FullCalendar.io
-
-Modern, component‑driven UI with built‑in accessibility and responsive design.
-
-#### API
-
-**Node.js** (v20) + **Express**
-
-Minimalist server framework that pairs naturally with Angular’s TypeScript ecosystem.
-
-#### Auth
-
-**JWT** (stateless)
-
-Scales easily across containers and simplifies front‑end token handling.
-
-#### Database
-
-**MongoDB Atlas** (cloud)
-
-Schemaless documents fit well for events with varying recurrence rules; managed service removes ops overhead.
-
-#### DevOps
-
-**Docker Compose** + **GitHub Actions**
-
-Guarantees reproducible builds and continuous integration for a professional portfolio.
+| Layer     | Technology (latest)                                 | Rationale                                                                                                     |
+| --------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Front‑end | **Angular 21** + Angular Material + FullCalendar.io | Modern, component‑driven UI with built‑in accessibility and responsive design.                                |
+| API       | **Node.js** (v20) + **Express**                     | Minimalist server framework that pairs naturally with Angular’s TypeScript ecosystem.                         |
+| Auth      | **JWT** (stateless)                                 | Scales easily across containers and simplifies front‑end token handling.                                      |
+| Database  | **MongoDB Atlas** (cloud)                           | Schemaless documents fit well for events with varying recurrence rules; managed service removes ops overhead. |
+| DevOps    | **Docker Compose** + **GitHub Actions**             | Guarantees reproducible builds and continuous integration for a professional portfolio.                       |
 
 ### Success Indicators
 
