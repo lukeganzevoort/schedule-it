@@ -1,11 +1,12 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { UserList } from './components/user-list/user-list';
+import { UserForm } from './components/user-form/user-form';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [UserList, UserForm],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('schedule-it-rec-leagues-client');

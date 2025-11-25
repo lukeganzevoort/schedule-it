@@ -1,0 +1,29 @@
+<div class="user-list">
+  <h2>Users</h2>
+
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && users.length === 0">No users found</div>
+
+  <table *ngIf="!loading && users.length > 0">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.createdAt | date }}</td>
+        <td>
+          <button (click)="deleteUser(user._id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
