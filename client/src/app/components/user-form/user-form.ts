@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
@@ -16,22 +16,22 @@ export class UserForm {
     name: '',
     email: '',
   };
-  success = '';
-  error = '';
+  success = signal('');
+  error = signal('');
 
   constructor(private userService: UserService) {}
 
   onSubmit(): void {
-    this.success = '';
-    this.error = '';
+    this.success.set('');
+    this.error.set('');
 
     this.userService.createUser(this.user).subscribe({
       next: (data) => {
-        this.success = 'User created successfully!';
+        this.success.set('User created successfully!');
         this.user = { name: '', email: '' };
       },
       error: (err) => {
-        this.error = 'Failed to create user';
+        this.error.set('Failed to create user');
         console.error(err);
       },
     });
