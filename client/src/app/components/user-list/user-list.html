@@ -1,10 +1,10 @@
 <div class="user-list">
-  <div *ngIf="loading">Loading...</div>
-  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="loading()">Loading...</div>
+  <div *ngIf="error()" class="error">{{ error() }}</div>
 
-  <div *ngIf="!loading && users.length === 0">No users found</div>
+  <div *ngIf="!loading() && users().length === 0">No users found</div>
 
-  <table *ngIf="!loading && users.length > 0">
+  <table *ngIf="!loading() && users().length > 0">
     <thead>
       <tr>
         <th>Name</th>
@@ -14,7 +14,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users">
+      <tr *ngFor="let user of users()">
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.createdAt | date }}</td>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
@@ -11,9 +11,9 @@ import { User } from '../../models/user.model';
   styleUrls: ['./user-list.css'],
 })
 export class UserList implements OnInit {
-  users: User[] = [];
-  loading = false;
-  error = '';
+  users = signal<User[]>([]);
+  loading = signal(false);
+  error = signal('');
 
   constructor(private userService: UserService) {}
 
@@ -22,15 +22,16 @@ export class UserList implements OnInit {
   }
 
   loadUsers(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.userService.getUsers().subscribe({
       next: (data) => {
-        this.users = data;
-        this.loading = false;
+        console.log(data);
+        this.users.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Failed to load users';
-        this.loading = false;
+        this.error.set('Failed to load users');
+        this.loading.set(false);
         console.error(err);
       },
     });
