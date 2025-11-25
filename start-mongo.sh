@@ -28,7 +28,5 @@ docker run --rm -it \
   --name "$CONTAINER_NAME" \
   -p "$MONGO_PORT:27017" \
   -v "$(pwd)/$DATA_DIR:/data/db" \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=admin123 \
-  mongo:"$MONGO_VERSION"
+  mongo:"$MONGO_VERSION" --noauth
 
