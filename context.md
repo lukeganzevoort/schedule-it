@@ -1,14 +1,10 @@
-# **schedule‑it – Project Context Overview**
+# **schedule‑it‑rec‑leagues – Project Context Overview**
 
 ### Purpose
 
-Create a lightweight, open‑source web service that lets organizations generate conflict‑free schedules. Typical users are:
+Create a lightweight, open‑source web service that helps recreational sports leagues generate conflict‑free game schedules. The application streamlines the process of assigning games to fields, teams, and referees while ensuring fair play time distribution and handling complex scheduling constraints.
 
-- **Recreational sports leagues** – assigning games to fields, teams, and referees.
-- **Healthcare facilities** – planning nurse or caregiver shifts across wards.
-- **Small schools or clubs** – arranging practice sessions, meetings, or events.
-
-The app demonstrates that a solo developer can deliver a full‑stack MEAN solution, from a modern Angular UI down to a MongoDB data layer, while handling real‑world constraints like resource availability and role‑based permissions.
+The app demonstrates that a solo developer can deliver a full‑stack MEAN solution, from a modern Angular UI down to a MongoDB data layer, while solving real‑world challenges like field availability, referee assignments, team preferences, and multi‑league coordination.
 
 ### Business Value
 
@@ -26,12 +22,12 @@ Built on the MEAN stack, the service can grow from a single league to multiple i
 
 ### Core Scope (high‑level)
 
-1.  **Multi‑tenant architecture** – each league or facility operates in isolation under a single application instance.
-2.  **Role‑based access** – admins manage resources and users; schedulers create/adjust events; viewers only read calendars.
-3.  **Calendar UI** – interactive view where users can drag, drop, and edit events.
-4.  **Conflict detection** – backend validates that no two events occupy the same resource or participant at the same time.
-5.  **Automatic schedule generation** – a simple algorithm that distributes events across available slots, demonstrating problem‑solving beyond CRUD.
-6.  **Export options** – CSV or iCal files so users can import schedules into personal calendars or reporting tools.
+1.  **Multi‑tenant architecture** – each recreational sports league operates in isolation under a single application instance.
+2.  **Role‑based access** – league admins manage fields, teams, and referees; schedulers create/adjust games; coaches and players view their team calendars.
+3.  **Calendar UI** – interactive view where users can drag, drop, and edit games with field and time slot visualization.
+4.  **Conflict detection** – backend validates that no two games occupy the same field at the same time, and ensures teams/referees aren't double‑booked.
+5.  **Automatic schedule generation** – an algorithm that distributes games fairly across available fields and time slots, balancing home/away games and avoiding back‑to‑back scheduling.
+6.  **Export options** – CSV or iCal files so coaches and players can import game schedules into personal calendars or team communication tools.
 
 ### High‑Level Technology Stack
 
@@ -45,10 +41,10 @@ Built on the MEAN stack, the service can grow from a single league to multiple i
 
 ### Success Indicators
 
-- A functional demo site where a user can register, create resources, add events, and run the auto‑scheduler.
+- A functional demo site where a league admin can register, set up fields and teams, assign referees, and generate a full season schedule with the auto‑scheduler.
 - Clean, well‑documented source code with a concise README that explains setup, architecture, and usage.
-- Positive feedback from peers or recruiters that the project showcases end‑to‑end MEAN expertise.
+- Positive feedback from peers or recruiters that the project showcases end‑to‑end MEAN expertise and practical problem‑solving for sports league management.
 
 ### Why This Context Matters
 
-Framing _schedule‑it_ around real scheduling problems (sports leagues, nurse shifts) makes the project feel purposeful. It aligns with common industry needs—resource allocation, conflict resolution, and multi‑tenant SaaS design—making the repository a compelling talking point during interviews or client pitches.
+Framing _schedule‑it‑rec‑leagues_ around recreational sports league scheduling makes the project immediately relatable and purposeful. Sports scheduling involves complex constraints—field availability, team fairness, referee assignments, and travel considerations—that demonstrate real problem‑solving skills. The solution showcases resource allocation, conflict resolution, and multi‑tenant SaaS design patterns that translate to many other domains, making the repository a compelling talking point during interviews or client pitches.
