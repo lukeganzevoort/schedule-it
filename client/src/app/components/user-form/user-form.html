@@ -1,0 +1,18 @@
+<div class="user-form">
+  <div *ngIf="success()" class="success text-green-500">{{ success() }}</div>
+  <div *ngIf="error()" class="error text-red-500">{{ error() }}</div>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" id="name" [(ngModel)]="user.name" name="name" required />
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" [(ngModel)]="user.email" name="email" required />
+    </div>
+
+    <button type="submit">Create User</button>
+  </form>
+</div>
