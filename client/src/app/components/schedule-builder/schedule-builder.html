@@ -1,0 +1,171 @@
+<div class="schedule-builder">
+  <div class="header">
+    <h1>Sports League Schedule Builder</h1>
+    <p class="subtitle">Create your game schedule by adding teams, fields, and referees</p>
+  </div>
+
+  <div class="builder-container">
+    <!-- Input Section -->
+    <div class="input-section" [class.collapsed]="scheduleGenerated()">
+      <div class="input-grid">
+        <!-- Teams Section -->
+        <div class="input-card">
+          <h2>Teams</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              [value]="teamName()"
+              (input)="teamName.set($any($event.target).value)"
+              (keyup.enter)="addTeam()"
+              placeholder="Enter team name"
+              class="input-field"
+            />
+            <button (click)="addTeam()" class="btn btn-add">Add Team</button>
+          </div>
+          <div class="item-list">
+            @if (teams().length === 0) {
+            <p class="empty-message">No teams added yet</p>
+            } @for (team of teams(); track team.id) {
+            <div class="item">
+              <span class="item-name">{{ team.name }}</span>
+              <button (click)="removeTeam(team.id)" class="btn-remove">×</button>
+            </div>
+            }
+          </div>
+          <div class="count-badge">{{ teams().length }} teams</div>
+        </div>
+
+        <!-- Fields Section -->
+        <div class="input-card">
+          <h2>Fields</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              [value]="fieldName()"
+              (input)="fieldName.set($any($event.target).value)"
+              (keyup.enter)="addField()"
+              placeholder="Enter field name"
+              class="input-field"
+            />
+            <button (click)="addField()" class="btn btn-add">Add Field</button>
+          </div>
+          <div class="item-list">
+            @if (fields().length === 0) {
+            <p class="empty-message">No fields added yet</p>
+            } @for (field of fields(); track field.id) {
+            <div class="item">
+              <span class="item-name">{{ field.name }}</span>
+              <button (click)="removeField(field.id)" class="btn-remove">×</button>
+            </div>
+            }
+          </div>
+          <div class="count-badge">{{ fields().length }} fields</div>
+        </div>
+
+        <!-- Referees Section -->
+        <div class="input-card">
+          <h2>Referees</h2>
+          <div class="input-group">
+            <input
+              type="text"
+              [value]="refereeName()"
+              (input)="refereeName.set($any($event.target).value)"
+              (keyup.enter)="addReferee()"
+              placeholder="Enter referee name"
+              class="input-field"
+            />
+            <button (click)="addReferee()" class="btn btn-add">Add Referee</button>
+          </div>
+          <div class="item-list">
+            @if (referees().length === 0) {
+            <p class="empty-message">No referees added yet</p>
+            } @for (referee of referees(); track referee.id) {
+            <div class="item">
+              <span class="item-name">{{ referee.name }}</span>
+              <button (click)="removeReferee(referee.id)" class="btn-remove">×</button>
+            </div>
+            }
+          </div>
+          <div class="count-badge">{{ referees().length }} referees</div>
+        </div>
+      </div>
+
+      <!-- Schedule Configuration -->
+      <div class="schedule-config">
+        <div class="config-card">
+          <label for="weeks">Number of Weeks:</label>
+          <input
+            id="weeks"
+            type="number"
+            [value]="numberOfWeeks()"
+            (input)="numberOfWeeks.set(+$any($event.target).value)"
+            min="1"
+            max="52"
+            class="input-field weeks-input"
+          />
+        </div>
+        <div class="action-buttons">
+          <button (click)="generateSchedule()" class="btn btn-primary btn-large">
+            Generate Schedule
+          </button>
+          <button (click)="clearAll()" class="btn btn-secondary">Clear All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Display Section -->
+    @if (scheduleGenerated()) {
+    <div class="schedule-section">
+      <div class="schedule-header">
+        <h2>Generated Schedule</h2>
+        <div class="schedule-actions">
+          <button (click)="resetSchedule()" class="btn btn-secondary">Back to Inputs</button>
+        </div>
+      </div>
+
+      <div class="schedule-stats">
+        <div class="stat-card">
+          <span class="stat-value">{{ teams().length }}</span>
+          <span class="stat-label">Teams</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ schedule().length }}</span>
+          <span class="stat-label">Total Games</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ getWeeks().length }}</span>
+          <span class="stat-label">Weeks</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value">{{ fields().length }}</span>
+          <span class="stat-label">Fields</span>
+        </div>
+      </div>
+
+      <div class="schedule-content">
+        @for (week of getWeeks(); track week) {
+        <div class="week-section">
+          <h3 class="week-header">Week {{ week }}</h3>
+          <div class="games-grid">
+            @for (game of getGamesForWeek(week); track $index) {
+            <div class="game-card">
+              <div class="game-time">{{ game.time }}</div>
+              <div class="game-matchup">
+                <span class="team home">{{ game.homeTeam }}</span>
+                <span class="vs">vs</span>
+                <span class="team away">{{ game.awayTeam }}</span>
+              </div>
+              <div class="game-details">
+                <span class="detail"> <strong>Field:</strong> {{ game.field }} </span>
+                <span class="detail"> <strong>Referee:</strong> {{ game.referee }} </span>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>
