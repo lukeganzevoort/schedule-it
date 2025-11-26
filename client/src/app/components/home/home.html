@@ -7,7 +7,9 @@
       intelligent scheduler ensures every team plays a fair number of home and away games while
       optimizing for venue availability and team constraints.
     </p>
-    <button class="cta-button" routerLink="/scheduler">Try Demo</button>
+    <button class="cta-button" routerLink="/scheduler" [queryParams]="{ demo: true }">
+      Try Demo
+    </button>
   </div>
 
   <div class="features-section">

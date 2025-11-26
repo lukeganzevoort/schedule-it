@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 interface Team {
   id: string;
@@ -33,7 +34,9 @@ interface Game {
   templateUrl: './schedule-builder.html',
   styleUrl: './schedule-builder.css',
 })
-export class ScheduleBuilder {
+export class ScheduleBuilder implements OnInit {
+  private route = inject(ActivatedRoute);
+
   // Input fields
   teamName = signal('');
   fieldName = signal('');
@@ -44,6 +47,46 @@ export class ScheduleBuilder {
   teams = signal<Team[]>([]);
   fields = signal<Field[]>([]);
   referees = signal<Referee[]>([]);
+
+  ngOnInit() {
+    // Check for demo query parameter
+    this.route.queryParams.subscribe((params) => {
+      if (params['demo'] !== undefined) {
+        this.loadDemoData();
+      }
+    });
+  }
+
+  // Load demo data
+  private loadDemoData() {
+    // Add demo teams
+    this.teams.set([
+      { id: crypto.randomUUID(), name: 'Thunder FC' },
+      { id: crypto.randomUUID(), name: 'Lightning United' },
+      { id: crypto.randomUUID(), name: 'Storm Strikers' },
+      { id: crypto.randomUUID(), name: 'Cyclone Athletic' },
+      { id: crypto.randomUUID(), name: 'Tornado SC' },
+      { id: crypto.randomUUID(), name: 'Hurricane FC' },
+    ]);
+
+    // Add demo fields
+    this.fields.set([
+      { id: crypto.randomUUID(), name: 'North Field' },
+      { id: crypto.randomUUID(), name: 'South Field' },
+      { id: crypto.randomUUID(), name: 'East Complex' },
+    ]);
+
+    // Add demo referees
+    this.referees.set([
+      { id: crypto.randomUUID(), name: 'John Smith' },
+      { id: crypto.randomUUID(), name: 'Sarah Johnson' },
+      { id: crypto.randomUUID(), name: 'Mike Davis' },
+      { id: crypto.randomUUID(), name: 'Emily Wilson' },
+    ]);
+
+    // Set number of weeks
+    this.numberOfWeeks.set(10);
+  }
 
   // Generated schedule
   schedule = signal<Game[]>([]);
