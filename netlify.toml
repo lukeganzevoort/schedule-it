@@ -1,0 +1,12 @@
+[build]
+  base = "client"
+  command = "npm run build"
+  publish = "dist/schedule-it-rec-leagues-client/browser"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
