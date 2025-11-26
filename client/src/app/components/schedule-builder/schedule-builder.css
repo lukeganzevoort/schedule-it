@@ -164,8 +164,6 @@
 }
 
 .btn-remove {
-  background: #e74c3c;
-  color: white;
   border: none;
   width: 28px;
   height: 28px;
@@ -180,7 +178,6 @@
 }
 
 .btn-remove:hover {
-  background: #c0392b;
   transform: scale(1.1);
 }
 
