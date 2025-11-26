@@ -2,6 +2,11 @@
 
 A lightweight, open-source web application that helps recreational sports leagues generate conflict-free game schedules. Built with the MEAN stack (MongoDB, Express, Angular, Node.js), this application streamlines the process of assigning games to fields, teams, and referees while ensuring fair play time distribution.
 
+## [Live Demo](https://schedule-it-rec-leagues.netlify.app/)
+
+View the live demo to see the application in action.
+[Live Demo](https://schedule-it-rec-leagues.netlify.app/)
+
 ## 🎯 Purpose
 
 Manual scheduling for recreational sports leagues is time-consuming and error-prone. This application automates the scheduling process, handling complex constraints like:
