@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -14,8 +14,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-  leagues: League[] = [];
-  loading = true;
+  leagues = signal<League[]>([]);
+  loading = signal(true);
   showCreateModal = false;
   newLeague = {
     name: '',
@@ -33,15 +33,16 @@ export class Dashboard implements OnInit {
   }
 
   loadLeagues(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.leagueService.getLeagues().subscribe({
       next: (leagues) => {
-        this.leagues = leagues;
-        this.loading = false;
+        console.log('Leagues loaded:', leagues);
+        this.leagues.set(leagues);
+        this.loading.set(false);
       },
       error: (err) => {
         console.error('Error loading leagues:', err);
-        this.loading = false;
+        this.loading.set(false);
       },
     });
   }
@@ -73,7 +74,7 @@ export class Dashboard implements OnInit {
       })
       .subscribe({
         next: (league) => {
-          this.leagues.unshift(league);
+          this.leagues.update((leagues) => [league, ...leagues]);
           this.closeCreateModal();
         },
         error: (err) => {
@@ -89,7 +90,7 @@ export class Dashboard implements OnInit {
     if (confirm('Are you sure you want to delete this league? This action cannot be undone.')) {
       this.leagueService.deleteLeague(leagueId).subscribe({
         next: () => {
-          this.leagues = this.leagues.filter((l) => l._id !== leagueId);
+          this.leagues.update((leagues) => leagues.filter((l) => l._id !== leagueId));
         },
         error: (err) => {
           console.error('Error deleting league:', err);
