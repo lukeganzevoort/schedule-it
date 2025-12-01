@@ -222,54 +222,84 @@ export class ScheduleBuilder implements OnInit {
     const games: Game[] = [];
     const teamList = [...teams];
 
-    // If odd number of teams, add a "BYE" team
-    if (teamList.length % 2 !== 0) {
-      teamList.push({ id: 'bye', name: 'BYE' });
-    }
-
     const numTeams = teamList.length;
-    const gamesPerWeek = numTeams / 2;
-    const totalRounds = numTeams - 1;
+    const gamesPerWeek = Math.floor(numTeams / 2);
 
     // Generate matchups using round-robin algorithm
     for (let week = 0; week < weeks; week++) {
-      const round = week % totalRounds;
+      // copy teamList to a new array
+      let teamListCopy: Team[] = [...teamList];
 
       for (let game = 0; game < gamesPerWeek; game++) {
-        let home: number;
-        let away: number;
+        // Sort teams by least number of home games
+        teamListCopy.sort((a, b) => {
+          const aHomeGames = games.filter((game) => game.homeTeam === a.name).length;
+          const bHomeGames = games.filter((game) => game.homeTeam === b.name).length;
+          if (aHomeGames !== bHomeGames) {
+            return aHomeGames - bHomeGames;
+          }
+          const aGamesAtThisTime = games.filter(
+            (g) =>
+              g.time === `${18 + Math.floor(game / fields.length)}:00` &&
+              (a.name === g.homeTeam || a.name === g.awayTeam)
+          ).length;
+          const bGamesAtThisTime = games.filter(
+            (g) =>
+              g.time === `${18 + Math.floor(game / fields.length)}:00` &&
+              (b.name === g.homeTeam || b.name === g.awayTeam)
+          ).length;
+          if (aGamesAtThisTime !== bGamesAtThisTime) {
+            return aGamesAtThisTime - bGamesAtThisTime;
+          }
+          return 0;
+        });
 
-        if (game === 0) {
-          home = 0;
-          away = numTeams - 1;
-        } else {
-          home = (round + game) % (numTeams - 1);
-          if (home >= 0) home++;
-          away = (round - game + numTeams - 1) % (numTeams - 1);
-          if (away >= 0) away++;
+        // pop the first team from teamListCopy
+        const homeTeam = teamListCopy.shift();
+        if (!homeTeam) {
+          continue;
         }
 
-        const homeTeam = teamList[home];
-        const awayTeam = teamList[away];
+        // create a new array with the remaining teams
+        const awayTeamList = [...teamListCopy];
 
-        // Skip games with BYE team
-        if (homeTeam.name !== 'BYE' && awayTeam.name !== 'BYE') {
-          const field = fields[game % fields.length];
-          const referee = referees[game % referees.length];
+        // sort awayTeamList by least number games played against homeTeam and then by most number of home games
+        awayTeamList.sort((a, b) => {
+          const aGames = games.filter(
+            (game) =>
+              (homeTeam.name === game.homeTeam || homeTeam.name === game.awayTeam) &&
+              (a.name === game.homeTeam || a.name === game.awayTeam)
+          ).length;
+          const bGames = games.filter(
+            (game) =>
+              (homeTeam.name === game.homeTeam || homeTeam.name === game.awayTeam) &&
+              (b.name === game.homeTeam || b.name === game.awayTeam)
+          ).length;
+          if (aGames !== bGames) {
+            return aGames - bGames;
+          }
+          const aHomeGames = games.filter((game) => game.homeTeam === a.name).length;
+          const bHomeGames = games.filter((game) => game.homeTeam === b.name).length;
+          return bHomeGames - aHomeGames;
+        });
 
-          // Generate time slots (starting at 6:00 PM, 1 hour apart)
-          const startHour = 18 + Math.floor(game / fields.length);
-          const time = `${startHour}:00`;
-
-          games.push({
-            week: week + 1,
-            homeTeam: homeTeam.name,
-            awayTeam: awayTeam.name,
-            field: field.name,
-            referee: referee.name,
-            time: time,
-          });
+        // pop the first team from awayTeamList
+        const awayTeam = awayTeamList.shift();
+        if (!awayTeam) {
+          continue;
         }
+        // remove the awayTeam from the teamListCopy
+        teamListCopy = teamListCopy.filter((t) => t.name !== awayTeam.name);
+
+        // add the game to the games array
+        games.push({
+          week: week + 1,
+          homeTeam: homeTeam.name,
+          awayTeam: awayTeam.name,
+          field: fields[game % fields.length].name,
+          referee: referees[game % referees.length].name,
+          time: `${18 + Math.floor(game / fields.length)}:00`,
+        });
       }
     }
 
