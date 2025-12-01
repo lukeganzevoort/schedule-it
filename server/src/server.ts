@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/database";
 import userRoutes from "./routes/userRoutes";
+import authRoutes from "./routes/authRoutes";
+import leagueRoutes from "./routes/leagueRoutes";
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/leagues", leagueRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

@@ -1,8 +1,37 @@
 <div class="schedule-builder">
-  <div class="header">
-    <h1>Sports League Schedule Builder</h1>
-    <p class="subtitle">Create your game schedule by adding teams, fields, and referees</p>
+  <!-- Mode Header -->
+  @if (loading()) {
+  <div class="text-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+    <p class="mt-4 text-gray-600">Loading league...</p>
   </div>
+  } @else {
+  <div class="header">
+    <div class="header-content">
+      <div>
+        @if (isDemoMode()) {
+        <div class="demo-badge">DEMO MODE</div>
+        <h1>Sports League Schedule Builder</h1>
+        <p class="subtitle">Try out the scheduler - changes are not saved</p>
+        } @else {
+        <h1>{{ league()?.name || 'League Schedule' }}</h1>
+        <p class="subtitle">{{ league()?.description || 'Manage your league schedule' }}</p>
+        }
+      </div>
+      <div class="header-actions">
+        @if (!isDemoMode()) {
+        <button (click)="saveLeague()" [disabled]="saving()" class="btn btn-save">
+          {{ saving() ? 'Saving...' : 'Save League' }}
+        </button>
+        } @if (isDemoMode()) {
+        <a routerLink="/" class="btn btn-secondary">← Back to Home</a>
+        } @else {
+        <a routerLink="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+        }
+      </div>
+    </div>
+  </div>
+  }
 
   <div class="builder-container">
     <!-- Input Section -->

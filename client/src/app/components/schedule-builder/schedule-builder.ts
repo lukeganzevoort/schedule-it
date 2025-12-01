@@ -1,7 +1,9 @@
 import { Component, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LeagueService } from '../../services/league.service';
+import { League } from '../../models/league.model';
 
 interface Team {
   id: string;
@@ -30,12 +32,21 @@ interface Game {
 @Component({
   selector: 'app-schedule-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './schedule-builder.html',
   styleUrl: './schedule-builder.css',
 })
 export class ScheduleBuilder implements OnInit {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private leagueService = inject(LeagueService);
+
+  // Mode tracking
+  isDemoMode = signal(true);
+  leagueId = signal<string | null>(null);
+  league = signal<League | null>(null);
+  loading = signal(false);
+  saving = signal(false);
 
   // Input fields
   teamName = signal('');
@@ -49,11 +60,63 @@ export class ScheduleBuilder implements OnInit {
   referees = signal<Referee[]>([]);
 
   ngOnInit() {
-    // Check for demo query parameter
-    this.route.queryParams.subscribe((params) => {
-      if (params['demo'] !== undefined) {
+    // Check for league ID in route params
+    this.route.params.subscribe((params) => {
+      if (params['id']) {
+        this.isDemoMode.set(false);
+        this.leagueId.set(params['id']);
+        this.loadLeague(params['id']);
+      } else {
+        // Demo mode - load demo data
+        this.isDemoMode.set(true);
         this.loadDemoData();
       }
+    });
+  }
+
+  // Load league from API
+  private loadLeague(id: string) {
+    this.loading.set(true);
+    this.leagueService.getLeague(id).subscribe({
+      next: (league) => {
+        this.league.set(league);
+
+        // Load teams
+        this.teams.set(league.settings.teams.map((name) => ({ id: crypto.randomUUID(), name })));
+
+        // Load fields
+        this.fields.set(league.settings.fields.map((name) => ({ id: crypto.randomUUID(), name })));
+
+        // Load referees
+        this.referees.set(
+          league.settings.referees.map((name) => ({ id: crypto.randomUUID(), name }))
+        );
+
+        // Load existing schedule if any
+        if (league.schedule && league.schedule.length > 0) {
+          const games: Game[] = league.schedule.map((game, index) => ({
+            week: Math.floor(index / (this.teams().length / 2)) + 1,
+            homeTeam: game.homeTeam,
+            awayTeam: game.awayTeam,
+            field: game.field,
+            referee: game.referee || '',
+            time: new Date(game.dateTime).toLocaleTimeString('en-US', {
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          }));
+          this.schedule.set(games);
+          this.scheduleGenerated.set(true);
+        }
+
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading league:', err);
+        alert('Failed to load league');
+        this.router.navigate(['/dashboard']);
+        this.loading.set(false);
+      },
     });
   }
 
@@ -229,6 +292,49 @@ export class ScheduleBuilder implements OnInit {
   resetSchedule() {
     this.schedule.set([]);
     this.scheduleGenerated.set(false);
+  }
+
+  // Save league data
+  saveLeague() {
+    const id = this.leagueId();
+    if (!id || this.isDemoMode()) {
+      alert('Cannot save in demo mode');
+      return;
+    }
+
+    this.saving.set(true);
+
+    // Prepare schedule data
+    const scheduleData = this.schedule().map((game) => ({
+      gameId: crypto.randomUUID(),
+      homeTeam: game.homeTeam,
+      awayTeam: game.awayTeam,
+      field: game.field,
+      referee: game.referee,
+      dateTime: new Date(), // You could calculate actual dates based on week
+    }));
+
+    // Update league
+    this.leagueService
+      .updateLeague(id, {
+        settings: {
+          teams: this.teams().map((t) => t.name),
+          fields: this.fields().map((f) => f.name),
+          referees: this.referees().map((r) => r.name),
+        },
+        schedule: scheduleData,
+      })
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          alert('League saved successfully!');
+        },
+        error: (err) => {
+          console.error('Error saving league:', err);
+          alert('Failed to save league');
+          this.saving.set(false);
+        },
+      });
   }
 
   // Clear all data
