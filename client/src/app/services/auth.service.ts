@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { User, AuthResponse, LoginRequest, RegisterRequest } from '../models/auth.model';
 
@@ -13,6 +13,9 @@ export class AuthService {
 
   currentUser = signal<User | null>(null);
   isAuthenticated = signal<boolean>(false);
+
+  private authCheckCompleteSubject = new Subject<boolean>();
+  authCheckComplete$ = this.authCheckCompleteSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {
     this.checkAuth();
@@ -58,11 +61,18 @@ export class AuthService {
         next: (user) => {
           this.currentUser.set(user);
           this.isAuthenticated.set(true);
+          this.authCheckCompleteSubject.next(true);
         },
         error: () => {
-          this.logout();
+          localStorage.removeItem(this.tokenKey);
+          this.currentUser.set(null);
+          this.isAuthenticated.set(false);
+          this.authCheckCompleteSubject.next(false);
         },
       });
+    } else {
+      // No token, auth check complete immediately
+      this.authCheckCompleteSubject.next(false);
     }
   }
 }
